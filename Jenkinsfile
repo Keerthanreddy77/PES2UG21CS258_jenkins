@@ -1,22 +1,23 @@
 pipeline {
-agent any
+agent {
+docker {
+image 'node: 14'
 stages {
-stage('Bui1d') {
+stage( 'clone repository') {
 steps {
-sh 'mvn clean install'
-echo 'Build stage successful '
-stage('Test') {
+git branch: 'main',
+url ' https://github.com/<user>/<repo>.git
+stage( 'Install dependencies') {
 steps {
-sh 'mvn test'
-echo 'Test Stage successful'
-post {
-always {
-junit 'target/surefire-reports/* . xml '
-stage( 'Deploy') {
+sh 'npm install'
+stage( 'Build application') {
 steps {
-sh 'mvn deploy'
-echo 'Deployment Successful '
-post {
-failure {
-echo 'pipeline failed'
-}}}
+sh 'npm run build'
+stage( 'Test application') {
+steps {
+sh 'npm test'}}
+  stage( 'Push Docker image') {
+steps {
+sh 'docker build -t <user>/<image>:$BUlLD NUMBER .
+sh 'docker push NUMBER'
+}}}}
